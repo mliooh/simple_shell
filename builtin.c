@@ -11,8 +11,6 @@ char **commands_arguments(char *commands)
 {
 	char **args = malloc(100 * sizeof(char *));
 
-	char *token;
-
 	int index = 0;
 
 	token = strtok(commands, " ");
@@ -33,7 +31,7 @@ char **commands_arguments(char *commands)
  * Return: Nothing.
  */
 
-char env_command(const char *commands)
+void env_command(const char *commands)
 {
 	bool comparison = my_strcmp(commands, "env");
 
@@ -78,14 +76,14 @@ char *handle_path(char *commands)
 		perror("Error: NULL command");
 	}
 
-	char *path = getenv("PATH");
+	path = getenv("PATH");
 
 	if (path == NULL)
 	{
 		perror("Error: PATH environment variable not found");
 	}
 
-	char *token_path = strtok(path, ":");
+	token_path = strtok(path, ":");
 
 	while (token_path != NULL)
 	{
@@ -142,5 +140,5 @@ char *handle_path(char *commands)
 	}
 
 	perror("Error: Command not found in PATH");
+	return (NULL);
 }
-

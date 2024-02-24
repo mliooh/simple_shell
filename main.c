@@ -21,7 +21,7 @@ int main(void)
 			exit(EXIT_FAILURE);
 		};
 
-		char *input = user_input();
+		input = user_input();
 
 		if (input == NULL)
 		{
@@ -31,20 +31,20 @@ int main(void)
 		}
 		/* Check if the command exists */
 
-		char *result = command_exists(input);
+		result = command_exists(input);
 
 		if (result == NULL)
 		{
 			/* command not found */
+			write(STDERR_FILENO, result, strlen(result));
 			continue;
 		}
 
 		/*handle env*/
 		env_command(input);
 		/*handle commands*/
-		write(STDOUT_FILENO, "we good\n", 8);
+
 
 		free(input);
 	}
 }
-

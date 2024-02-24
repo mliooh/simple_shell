@@ -14,11 +14,14 @@ int exit_command(const char *commands);
 
 extern const char EXIT_COMMAND[];
 
+char *result;
+
+char *input;
+
 /*builtin.c*/
 char *command_exists(char *commands);
 
 char **commands_arguments(char *commands);
-
 
 extern char **environ;
 
@@ -26,5 +29,14 @@ bool my_strcmp(const char *string1, const char *string2);
 
 char *handle_path(char *commands);
 
-char env_command(const char *commands);
+void env_command(const char *commands);
 
+char *path;
+
+char *token;
+
+char *token_path;
+
+char **args;
+
+pid_t pid;
