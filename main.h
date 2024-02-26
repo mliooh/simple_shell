@@ -29,7 +29,7 @@ bool my_strcmp(const char *string1, const char *string2);
 
 char *handle_path(char *commands);
 
-void env_command(const char *commands);
+void env_command();
 
 char *path;
 
@@ -39,4 +39,20 @@ char *token_path;
 
 char **args;
 
+char **current;
+
 pid_t pid;
+
+/* my_getline */
+
+char *my_getline();
+
+char *line;
+
+size_t total_length;
+
+ssize_t i;
+
+char *more_data;
+
+#define BUFFER_SIZE 1024

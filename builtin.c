@@ -31,22 +31,15 @@ char **commands_arguments(char *commands)
  * Return: Nothing.
  */
 
-void env_command(const char *commands)
+void env_command()
 {
-	bool comparison = my_strcmp(commands, "env");
-
-	if (comparison == true)
+	for (current = environ; *current != NULL; current++)
 	{
-		ssize_t i = 0;
-
-		while (environ[i] != NULL)
-		{
-			write(STDOUT_FILENO, environ[i], strlen(environ[i]));
+		write(STDOUT_FILENO, *current, strlen(*current));
 			write(STDOUT_FILENO, "\n", 1);
-			i++;
-		}
 	}
-}
+	
+	}
 
 /**
  * my_strcmp - Compare two strings for equality.
