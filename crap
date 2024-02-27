@@ -1,0 +1,107 @@
+
+/*char *handle_path(char *commands)
+{
+	if (commands == NULL)
+	{
+		perror("Error: NULL command");
+	}
+
+	path = getenv("PATH");
+
+	if (path == NULL)
+	{
+		perror("Error: PATH environment variable not found");
+	}
+
+	token_path = strtok(path, ":");
+
+	while (token_path != NULL)
+	{
+		char *full_path = malloc(strlen(token_path) + strlen(commands) + 2);
+
+		if (full_path == NULL)
+		{
+			perror("Error: Unable to allocate memory for full_path");
+			exit(EXIT_FAILURE);
+		}
+
+		strcpy(full_path, token_path);
+		strcat(full_path, "/");
+		strcat(full_path, commands);
+
+		if (access(commands, X_OK) == 0)
+		{
+			 command exists and is exeutable
+			pid_t pid = fork();
+
+			if (pid < 0)
+			{
+				perror("Fork failed");
+				free(full_path);
+			}
+
+			else if (pid == 0)
+			{
+				child process
+				char **args = commands_arguments(full_path);
+
+				if (args == NULL)
+				{
+					perror("Error: Unable to tokenize command");
+					free(full_path);
+					exit(EXIT_FAILURE);
+				}
+
+				execv(args[0], args);
+
+				perror("execve");
+				free(full_path);
+				exit(EXIT_FAILURE);
+			}
+			else
+			{
+				waitpid(pid, NULL, 0);
+				free(full_path);
+				return (NULL);
+			}
+		}
+		free(full_path);
+		token_path = strtok(NULL, ":");
+	}
+
+	perror("Error: Command not found in PATH");
+	return (NULL);
+}
+*/
+
+
+
+/* char *path = malloc(MAX_PATH_LENGTH);
+	if (path == NULL)
+	{
+		perror("malloc");
+		exit(EXIT_FAILURE);
+	}
+
+	len = readlink("/proc/self/exe", path, MAX_PATH_LENGTH - 1);
+
+	if (len == -1)
+	{
+		perror("readlink");
+		free(path);
+		exit(EXIT_FAILURE);
+	}
+	path[len] = '\0';
+	/*Remove the executable name, leaving only the directory
+
+	last_slash = strrchr(path, '/');
+	if (last_slash != NULL)
+	{
+		*last_slash = '\0';
+	}
+	else
+	{
+		write(STDOUT_FILENO, "Error: Path does not contain a '/'\n", 36);
+		free(path);
+		exit(EXIT_FAILURE);
+	}*/

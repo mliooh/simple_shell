@@ -20,11 +20,15 @@ char *user_input()
 		free(commands);
 		return (NULL);
 	}
+	/* handle comments #*/
+	handle_comments(commands);
+
 	/* handle exit*/
 	if (exit_command(commands) == 1)
 	{
 		exit(EXIT_FAILURE);
 	}
+
 	return (commands);
 }
 
@@ -152,4 +156,18 @@ char *command_exists(char *commands)
 	}
 
 	return (NULL);
+}
+
+/**
+ * handle_comments - Truncate the command at '#' to remove comments.
+ * @commands: The user input command string.
+ */
+
+void handle_comments(char *commands)
+{
+	char *comment_position = strchr(commands, '#');
+	if (comment_position != NULL)
+	{
+		*comment_position = '\0';
+	}
 }

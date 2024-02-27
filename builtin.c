@@ -11,16 +11,36 @@ char **commands_arguments(char *commands)
 {
 	char **args = malloc(100 * sizeof(char *));
 
-	int index = 0;
+	if (args == NULL)
+	{
+		perror("malloc");
+		exit(EXIT_FAILURE);
+	}
+
+	args_index = 0;
 
 	token = strtok(commands, " ");
-	while (token != NULL)
+
+	while (token != NULL && args_index < 99)
 	{
-		args[index] = token;
-		index++;
+
+		args[args_index] = strdup(token);
+
+		if (args[args_index] == NULL)
+		{
+			perror("strdup");
+			for (i = 0; i < args_index; i++)
+			{
+				free(args[i]);
+			}
+			free(args);
+			exit(EXIT_FAILURE);
+		}
+		args_index++;
 		token = strtok(NULL, " ");
 	}
-	args[index] = NULL;
+	args[args_index] = NULL;
+
 	return (args);
 }
 
@@ -33,13 +53,22 @@ char **commands_arguments(char *commands)
 
 void env_command()
 {
-	for (current = environ; *current != NULL; current++)
+	if (environ == NULL)
 	{
-		write(STDOUT_FILENO, *current, strlen(*current));
-			write(STDOUT_FILENO, "\n", 1);
+		perror("environ");
 	}
-	
+	for (env = environ; *env != NULL; env++)
+	{
+		size_t len = 0;
+		while ((*env)[len] != '\0')
+		{
+			len++;
+		}
+
+		write(STDOUT_FILENO, *env, len);
+		write(STDOUT_FILENO, "\n", 1);
 	}
+}
 
 /**
  * my_strcmp - Compare two strings for equality.
@@ -62,76 +91,77 @@ bool my_strcmp(const char *string1, const char *string2)
 	return (*string1 == *string2);
 }
 
-char *handle_path(char *commands)
+/**
+ * get_path - Get the directory path of the currently executing program.
+ *
+ * Return: A dynamically allocated string containing the directory path.
+ *         NULL on failure.
+ */
+
+char *get_path(void)
 {
-	if (commands == NULL)
-	{
-		perror("Error: NULL command");
-	}
-
-	path = getenv("PATH");
-
+	char *path = getenv("PATH");
 	if (path == NULL)
 	{
-		perror("Error: PATH environment variable not found");
+		perror("getenv");
+		exit(EXIT_FAILURE);
 	}
 
-	token_path = strtok(path, ":");
+	return (path);
+}
+
+/**
+ * handle_path - Execute a command by searching for its executable in the PATH.
+ * @commands: The command to be executed, along with any arguments.
+ *
+ * Return: NULL on success, or an error message on failure.
+ */
+
+void handle_path(char *commands)
+{
+	char *path = get_path();
+	char *path_copy = strdup(path);
+	char *token_path = strtok(path_copy, ":");
 
 	while (token_path != NULL)
 	{
-		char *full_path = malloc(strlen(token_path) + strlen(commands) + 2);
-
-		if (full_path == NULL)
+		if (token_path != NULL && commands != NULL)
 		{
-			perror("Error: Unable to allocate memory for full_path");
-			exit(EXIT_FAILURE);
-		}
+			char *full_path = malloc(strlen(token_path) + strlen(commands) + 2);
 
-		strcpy(full_path, token_path);
-		strcat(full_path, "/");
-		strcat(full_path, commands);
-
-		if (access(commands, X_OK) == 0)
-		{
-			/* command exists and is exeutable */
-			pid_t pid = fork();
-
-			if (pid < 0)
+			if (full_path == NULL)
 			{
-				perror("Fork failed");
-				free(full_path);
-			}
-
-			else if (pid == 0)
-			{
-				/*child process*/
-				char **args = commands_arguments(full_path);
-
-				if (args == NULL)
-				{
-					perror("Error: Unable to tokenize command");
-					free(full_path);
-					exit(EXIT_FAILURE);
-				}
-
-				execv(args[0], args);
-
-				perror("execve");
-				free(full_path);
+				perror("malloc");
 				exit(EXIT_FAILURE);
 			}
-			else
-			{
-				waitpid(pid, NULL, 0);
-				free(full_path);
-				return (NULL);
-			}
-		}
-		free(full_path);
-		token_path = strtok(NULL, ":");
-	}
 
-	perror("Error: Command not found in PATH");
-	return (NULL);
+			strcpy(full_path, token_path);
+			strcat(full_path, "/");
+			strcat(full_path, commands);
+
+			if (access(full_path, X_OK) == 0)
+			{
+
+				/*The command exists at this path*/
+
+				char **args = commands_arguments(commands);
+				execve(full_path, args, environ);
+				perror("execve");
+				for (k = 0; k < args_index; k++)
+				{
+					free(args[k]);
+				}
+				free(args);
+			}
+
+			free(full_path);
+			token_path = strtok(NULL, ":");
+		}
+
+		/* the command not found in path */
+
+		write(STDOUT_FILENO, "Command not found\n", 18);
+
+		free(path_copy);
+	}
 }

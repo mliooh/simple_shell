@@ -29,27 +29,41 @@ int main(void)
 			write(STDOUT_FILENO, "\n", 1);
 			exit(EXIT_FAILURE);
 		}
+
 		/* Check if the command exists */
 
 		result = command_exists(input);
 
 		if (result == NULL)
 		{
+			if (strcmp(input, "env\n") == 0)
+			{
+				env_command();
+			}
+			else if (strncmp(input, "cd", 2) == 0)
+			{
+				char *space_pos = strchr(input, ' ');
+
+				/* Check if there is a space after "cd" */
+				if (space_pos != NULL)
+				{
+					char *directory = space_pos + 1;
+					cd_command(directory);
+				}
+				else
+				{
+					/* If no space after "cd", change to home directory */
+					cd_command(NULL);
+				}
+			}
+		}
+		else
+		{
 			/* command not found */
 			write(STDERR_FILENO, result, strlen(result));
-			continue;
 		}
 
-		/*handle env*/
-		input[strcspn(input, "\n")] = 0;
-		if (strcmp(input, "env") == 0)
-		{
-			env_command(input);
-		}
-		
-		/*handle commands*/
-
-
+		/* Free the input after processing */
 		free(input);
 	}
 }

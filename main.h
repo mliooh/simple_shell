@@ -27,9 +27,11 @@ extern char **environ;
 
 bool my_strcmp(const char *string1, const char *string2);
 
-char *handle_path(char *commands);
+void handle_path(char *commands);
 
 void env_command();
+
+char *last_slash;
 
 char *path;
 
@@ -41,6 +43,16 @@ char **args;
 
 char **current;
 
+int args_index;
+
+int j;
+
+int k;
+
+char **env;
+
+void handle_comments(char *commands);
+
 pid_t pid;
 
 /* my_getline */
@@ -51,8 +63,23 @@ char *line;
 
 size_t total_length;
 
+char *message;
+
 ssize_t i;
+
+ssize_t len;
 
 char *more_data;
 
+void cd_command(char *directory);
+
+void update_pwd();
+
+char *cwd;
+
+char *home;
+
+char *oldpwd;
+
 #define BUFFER_SIZE 1024
+/*#define MAX_PATH_LENGTH 4096*/
