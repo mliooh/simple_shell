@@ -25,6 +25,10 @@ char *user_input()
 	{
 		exit(EXIT_FAILURE);
 	}
+	/*(else if (strcmp(commands, "env") == 0)
+	{
+		write(STDOUT_FILENO, "t", 1);
+	}*/
 	return (commands);
 }
 

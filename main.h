@@ -39,7 +39,11 @@ char *token_path;
 
 char **args;
 
-char **current;
+ssize_t current;
+
+char **env;
+
+char *cwd;
 
 pid_t pid;
 

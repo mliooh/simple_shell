@@ -42,10 +42,6 @@ int main(void)
 
 		/*handle env*/
 		input[strcspn(input, "\n")] = 0;
-		if (strcmp(input, "env") == 0)
-		{
-			env_command(input);
-		}
 		
 		/*handle commands*/
 

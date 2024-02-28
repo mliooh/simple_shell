@@ -33,10 +33,19 @@ char **commands_arguments(char *commands)
 
 void env_command()
 {
-	for (current = environ; *current != NULL; current++)
+	env = environ;
+	while (*env != NULL)
 	{
-		write(STDOUT_FILENO, *current, strlen(*current));
-			write(STDOUT_FILENO, "\n", 1);
+		current = 0;
+
+		while ((*env)[current] != '\0')
+		{
+			current++;
+		}
+		
+		write(STDOUT_FILENO, *env, current);
+        write(STDOUT_FILENO, "\n", 1);
+        env++;
 	}
 	
 	}
